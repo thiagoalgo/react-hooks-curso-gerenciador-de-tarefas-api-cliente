@@ -12,9 +12,9 @@ describe('Testa o componente de Cadastro de Tarefas', () => {
 
   it('deve cadastrar uma nova tarefa', () => {
     const { getByTestId } = render(<CadastrarTarefa/>)
-    fireEvent.change(getByTestId('txt-tarefa', {target: {value: 'Nova tarefa teste'}}))
+    fireEvent.change(getByTestId('txt-tarefa'), {target: {value: 'Nova tarefa teste'}})
     fireEvent.click(getByTestId('btn-cadastrar'))
-    //expect(getByTestId('modal')).toHaveTextContent('Sucesso')
-    //expect(getByTestId('modal')).toHaveTextContent('Tarefa cadastrada com sucesso')
+    expect(getByTestId('modal')).toHaveTextContent('Sucesso')
+    expect(getByTestId('modal')).toHaveTextContent('Tarefa cadastrada com sucesso')
   })
 })

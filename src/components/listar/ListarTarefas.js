@@ -3,6 +3,7 @@ import { A } from 'hookrouter'
 import { Table } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import ItensListaTarefas from './ItensListaTarefas'
 
 function ListarTarefas() {
 
@@ -14,7 +15,6 @@ function ListarTarefas() {
       const tarefasDb = localStorage['tarefas']
       let listaTarefas = tarefasDb ? JSON.parse(tarefasDb): []
       setTarefas(listaTarefas)
-      console.log(listaTarefas)
     }
     if (carregarTarefas) {
       obterTarefas()
@@ -24,6 +24,7 @@ function ListarTarefas() {
 
   return (
     <div className="text-center">
+      <h1>Lista de Tarefas</h1>
       <Table striped bordered hover responsive data-testid="tabela">
         <thead>
           <tr>
@@ -42,7 +43,9 @@ function ListarTarefas() {
           </tr>
         </thead>
         <tbody>
-
+          <ItensListaTarefas 
+            tarefas={tarefas} 
+            recarregarTarefas={setCarregarTarefas} />
         </tbody>
       </Table>
     </div>
