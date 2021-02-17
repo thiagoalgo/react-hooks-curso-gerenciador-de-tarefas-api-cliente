@@ -19,7 +19,7 @@ describe('Testa o componente Itens de listar Tarefas', () => {
     const { getByTestId } = render(
       <table>
         <tbody>
-          <ItensListaTarefas tarefas={[tarefa]} recarregarTarefas={() => { }} />,
+          <ItensListaTarefas tarefas={[tarefa]} recarregarTarefas={() => { }} />
         </tbody>
       </table>
     )
@@ -30,7 +30,7 @@ describe('Testa o componente Itens de listar Tarefas', () => {
     const { getByTestId } = render(
       <table>
         <tbody>
-          <ItensListaTarefas tarefas={[tarefaConcluida]} recarregarTarefas={() => { }} />,
+          <ItensListaTarefas tarefas={[tarefaConcluida]} recarregarTarefas={() => { }} />
         </tbody>
       </table>
     )
