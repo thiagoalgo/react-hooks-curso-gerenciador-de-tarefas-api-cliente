@@ -26,7 +26,7 @@ describe('Testa o componente de Excluir Tarefa', () => {
     localStorage['tarefas'] = JSON.stringify([tarefa])
     const {getByTestId} = render(<ExcluirTarefa tarefa={tarefa} recarregarTarefas={() => {}}/>)
     fireEvent.click(getByTestId('btn-abrir-modal'))
-    fireEvent.click(getByTestId('btn-concluir'))
+    fireEvent.click(getByTestId('btn-excluir'))
     const tarefasDb = JSON.parse(localStorage['tarefas'])
     expect(tarefasDb.length).toBe(0)
   })

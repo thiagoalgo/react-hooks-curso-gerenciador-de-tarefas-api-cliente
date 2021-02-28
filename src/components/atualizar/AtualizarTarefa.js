@@ -39,16 +39,6 @@ function AtualizarTarefa(props) {
         setExibirModalErro(true)
         console.log(error)
       }
-      // const tarefasDb = localStorage['tarefas']
-      // let tarefas = tarefasDb ? JSON.parse(tarefasDb) : []
-      // tarefas = tarefas.map(t => {
-      //   if (t.id === parseInt(props.id)) {
-      //     t.nome = tarefa
-      //   }
-      //   return t
-      // })
-      // localStorage['tarefas'] = JSON.stringify(tarefas)
-      // setExibirModal(true)
     }
   }
 

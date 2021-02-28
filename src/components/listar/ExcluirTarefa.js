@@ -3,14 +3,22 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { useState } from 'react'
 import { PropTypes } from 'prop-types'
+import axios from 'axios'
 
 function ExcluirTarefa(props) {
+  const API_URL_ATUALIZAR_TAREFAS = 'http://localhost:3001/gerenciador-tarefas'
 
   const [exibirModal, setExibirModal] = useState(false)
+  const [exibirModalErro, setExibirModalErro] = useState(false)
 
   function handleFecharModal(event) {
     event.preventDefault()
     setExibirModal(false)
+  }
+
+  function handleFecharModalErro(event) {
+    event.preventDefault()
+    setExibirModalErro(false)
   }
 
   function handleAbrirModal(event) {
@@ -18,17 +26,16 @@ function ExcluirTarefa(props) {
     setExibirModal(true)
   }
 
-  function handleExcluir(event) {
+  async function handleExcluir(event) {
     event.preventDefault()
-    
-    let tarefasDb = JSON.parse(localStorage['tarefas'])
-    tarefasDb = tarefasDb.filter(t => {
-      return t.id !== props.tarefa.id
-    })
-    localStorage['tarefas'] = JSON.stringify(tarefasDb)
-
-    props.recarregarTarefas(true)
-    setExibirModal(false)
+    try {
+      await axios.delete(API_URL_ATUALIZAR_TAREFAS + '/' + props.tarefa.id)
+      props.recarregarTarefas(true)
+      setExibirModal(false)
+    } catch (error) {
+      setExibirModalErro(true)
+      console.log(error)
+    }
   }
 
   return (
@@ -56,14 +63,28 @@ function ExcluirTarefa(props) {
           <Button
             variant="success"
             onClick={handleExcluir}
-            data-testid="btn-concluir">
-            Concluir
+            data-testid="btn-excluir">
+            Excluir
           </Button>
           <Button
             variant="light"
             onClick={handleFecharModal}
             data-testid="btn-fechar-modal">Cancelar</Button>
         </Modal.Footer>
+        <Modal
+          show={exibirModalErro}
+          onHide={handleFecharModalErro}
+          data-testid='modalErro'>
+          <Modal.Header closeButton>
+            <Modal.Title>Erro</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Erro ao excluir tarefa
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="warning" onClick={handleFecharModalErro}>Fechar</Button>
+          </Modal.Footer>
+        </Modal>
       </Modal>
     </span>
   )
