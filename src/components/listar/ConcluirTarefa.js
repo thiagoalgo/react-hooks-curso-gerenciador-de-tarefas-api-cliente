@@ -3,10 +3,13 @@ import { Button, Modal } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faClipboardCheck } from '@fortawesome/free-solid-svg-icons'
 import { useState } from 'react'
+import axios from 'axios'
 
 function ConcluirTarefa(props) {
+  const API_URL_ATUALIZAR_TAREFAS = 'http://localhost:3001/gerenciador-tarefas/:id/concluir'
 
   const [exibirModal, setExibirModal] = useState(false)
+  const [exibirModalErro, setExibirModalErro] = useState(false)
 
   function handleAbrirModal(event) {
     event.preventDefault()
@@ -18,19 +21,20 @@ function ConcluirTarefa(props) {
     setExibirModal(false)
   }
 
-  function handleConcluir() {
-    const tarefasDb = localStorage['tarefas']
-    let tarefas = tarefasDb ? JSON.parse(tarefasDb) : null
-    
-    tarefas = tarefas.map(t => {
-      if (t.id === props.tarefa.id) {
-        t.concluida = true
-      }
-      return t
-    })
-    localStorage['tarefas'] = JSON.stringify(tarefas)
-    setExibirModal(false)
-    props.recarregarTarefas(true)
+  function handleFecharModalErro(event) {
+    event.preventDefault()
+    setExibirModalErro(false)
+  }
+
+  async function handleConcluir() {
+    try {
+      await axios.put(API_URL_ATUALIZAR_TAREFAS.replace(':id', props.tarefa.id))
+      setExibirModal(false)
+      props.recarregarTarefas(true)
+    } catch (error) {
+      setExibirModalErro(true)
+      console.log(error)
+    }
   }
 
   return (
@@ -66,6 +70,20 @@ function ConcluirTarefa(props) {
             data-testid="btn-fechar-modal">Cancelar</Button>
         </Modal.Footer>
       </Modal>
+      <Modal
+          show={exibirModalErro}
+          onHide={handleFecharModalErro}
+          data-testid='modalErro'>
+          <Modal.Header closeButton>
+            <Modal.Title>Erro</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Erro ao concluir tarefa
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="warning" onClick={handleFecharModalErro}>Fechar</Button>
+          </Modal.Footer>
+        </Modal>
     </span>
   )
 }
