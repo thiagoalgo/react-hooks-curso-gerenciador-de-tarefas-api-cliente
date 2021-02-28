@@ -2,10 +2,13 @@ import { Jumbotron, Form, Modal, Button } from 'react-bootstrap'
 import { useState } from 'react'
 import { navigate, A } from 'hookrouter'
 import Tarefa from '../../models/Tarefa'
+import axios from 'axios'
 
 function CadastrarTarefa() {
+  const API_URL_CADASTRAR_TAREFAS = 'http://localhost:3001/gerenciador-tarefas'
 
   const [exibirModal, setExibirModal] = useState(false)
+  const [exibirModalErro, setExibirModalErro] = useState(false)
   const [tarefa, setTarefa] = useState('')
   const [formValidado, setFormValidado] = useState(false)
 
@@ -17,15 +20,23 @@ function CadastrarTarefa() {
     navigate('/')
   }
 
-  function cadastrar(event) {
+  function handleFecharModalErro() {
+    setExibirModalErro(false)
+  }
+
+  async function cadastrar(event) {
     event.preventDefault()
     setFormValidado(true)
     if (event.currentTarget.checkValidity() === true) {
-      const tarefasDb = localStorage['tarefas']
-      const tarefas = tarefasDb ? JSON.parse(tarefasDb) : []
-      tarefas.push(new Tarefa(new Date().getTime(), tarefa, false))
-      localStorage['tarefas'] = JSON.stringify(tarefas)
-      setExibirModal(true)
+      try {
+        await axios.post(
+          API_URL_CADASTRAR_TAREFAS,
+          new Tarefa(null, tarefa, false))
+        setExibirModal(true)
+      } catch (error) {
+        setExibirModalErro(true)
+        console.log(error)
+      }
     }
   }
 
@@ -66,8 +77,8 @@ function CadastrarTarefa() {
               </A>
           </Form.Group>
         </Form>
-        <Modal 
-          show={exibirModal} 
+        <Modal
+          show={exibirModal}
           onHide={handleFecharModal}
           data-testid='modal'>
           <Modal.Header closeButton>
@@ -78,6 +89,20 @@ function CadastrarTarefa() {
           </Modal.Body>
           <Modal.Footer>
             <Button variant="success" onClick={handleFecharModal}>Fechar</Button>
+          </Modal.Footer>
+        </Modal>
+        <Modal
+          show={exibirModalErro}
+          onHide={handleFecharModalErro}
+          data-testid='modalErro'>
+          <Modal.Header closeButton>
+            <Modal.Title>Erro</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Erro ao cadastrar tarefa
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="warning" onClick={handleFecharModalErro}>Fechar</Button>
           </Modal.Footer>
         </Modal>
       </Jumbotron>
