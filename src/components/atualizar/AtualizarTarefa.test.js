@@ -4,7 +4,7 @@ import AtualizarTarefa from './AtualizarTarefa'
 import Tarefa from '../../models/Tarefa'
 import { render, fireEvent } from '@testing-library/react'
 
-describe('Testa o componente de Atualização Tarefas', () => {
+describe.skip('Testa o componente de Atualização Tarefas', () => {
 
   const tarefaId = 1
   const tarefa = new Tarefa(tarefaId, 'Nova tarefa', false)
