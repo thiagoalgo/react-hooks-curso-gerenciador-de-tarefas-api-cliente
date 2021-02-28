@@ -4,7 +4,7 @@ import ItensListaTarefas from './ItensListaTarefas'
 import Tarefa from '../../models/Tarefa'
 import { render, fireEvent } from '@testing-library/react'
 
-describe.skip('Testa o componente Itens de listar Tarefas', () => {
+describe('Testa o componente Itens de listar Tarefas', () => {
   const nomeTarefa = 'Tarefa'
   const tarefa = new Tarefa(1, nomeTarefa, false)
   const tarefaConcluida = new Tarefa(2, nomeTarefa, true)
