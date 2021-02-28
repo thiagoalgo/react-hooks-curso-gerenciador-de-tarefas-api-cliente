@@ -2,10 +2,14 @@ import PropTypes from 'prop-types'
 import { Jumbotron, Form, Modal, Button } from 'react-bootstrap'
 import { useState, useEffect } from 'react'
 import { navigate, A } from 'hookrouter'
+import Tarefa from '../../models/Tarefa'
+import axios from 'axios'
 
 function AtualizarTarefa(props) {
+  const API_URL_ATUALIZAR_TAREFAS = 'http://localhost:3001/gerenciador-tarefas'
 
   const [exibirModal, setExibirModal] = useState(false)
+  const [exibirModalErro, setExibirModalErro] = useState(false)
   const [tarefa, setTarefa] = useState('')
   const [formValidado, setFormValidado] = useState(false)
   const [carregarTarefa, setCarregarTarefa] = useState(true)
@@ -18,29 +22,45 @@ function AtualizarTarefa(props) {
     navigate('/')
   }
 
-  function atualizar(event) {
+  function handleFecharModalErro() {
+    setExibirModalErro(false)
+  }
+
+  async function atualizar(event) {
     event.preventDefault()
     setFormValidado(true)
     if (event.currentTarget.checkValidity() === true) {
-      const tarefasDb = localStorage['tarefas']
-      let tarefas = tarefasDb ? JSON.parse(tarefasDb) : []
-      tarefas = tarefas.map(t => {
-        if (t.id === parseInt(props.id)) {
-          t.nome = tarefa
-        }
-        return t
-      })
-      localStorage['tarefas'] = JSON.stringify(tarefas)
-      setExibirModal(true)
+      try {
+        await axios.put(
+          API_URL_ATUALIZAR_TAREFAS + '/' + props.id,
+          new Tarefa(null, tarefa, false))
+        setExibirModal(true)
+      } catch (error) {
+        setExibirModalErro(true)
+        console.log(error)
+      }
+      // const tarefasDb = localStorage['tarefas']
+      // let tarefas = tarefasDb ? JSON.parse(tarefasDb) : []
+      // tarefas = tarefas.map(t => {
+      //   if (t.id === parseInt(props.id)) {
+      //     t.nome = tarefa
+      //   }
+      //   return t
+      // })
+      // localStorage['tarefas'] = JSON.stringify(tarefas)
+      // setExibirModal(true)
     }
   }
 
   useEffect(() => {
-    function obterTarefa() {
-      const tarefasDb = localStorage['tarefas']
-      const tarefas = tarefasDb ? JSON.parse(tarefasDb) : []
-      const tarefaAtual = tarefas.find(t => t.id === parseInt(props.id))
-      setTarefa(tarefaAtual.nome)
+    async function obterTarefa() {
+      try {
+        let {data} = await axios.get(API_URL_ATUALIZAR_TAREFAS + '/' + props.id)
+        setTarefa(data.nome)
+      } catch (error) {
+        navigate('/')
+        console.log(error);
+      }
     }
     if (carregarTarefa) {
       obterTarefa()
@@ -97,6 +117,20 @@ function AtualizarTarefa(props) {
           </Modal.Body>
           <Modal.Footer>
             <Button variant="success" onClick={handleFecharModal}>Fechar</Button>
+          </Modal.Footer>
+        </Modal>
+        <Modal
+          show={exibirModalErro}
+          onHide={handleFecharModalErro}
+          data-testid='modalErro'>
+          <Modal.Header closeButton>
+            <Modal.Title>Erro</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Erro ao atualizar tarefa
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="warning" onClick={handleFecharModalErro}>Fechar</Button>
           </Modal.Footer>
         </Modal>
       </Jumbotron>

@@ -31,7 +31,6 @@ function ListarTarefas() {
           ordem = 'DESC'
         }
         const query = `?pag=${paginaAtual}&itens-por-pagina=${ITENS_POR_PAGINA}&ordem=${ordem}&filtro-tarefa=${filtroTarefa}`
-        console.log(query)
         let { data } = await axios.get(API_URL_LISTAR_TAREFAS + query)
         setTotalItens(data.totalItens)
         setTarefas(data.tarefas)
